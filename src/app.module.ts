@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TasksModule } from './tasks/tasks.module';
 import { AppController } from './app.controller';
 import { typeOrmConfigAsync } from './config/conection.config';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [TypeOrmModule.forRootAsync(typeOrmConfigAsync),
@@ -11,7 +12,8 @@ import { typeOrmConfigAsync } from './config/conection.config';
       isGlobal: true,
       envFilePath: '.env'
     }),
-    TasksModule],
+    TasksModule,
+    AuthModule],
   controllers: [AppController],
 })
 export class AppModule {}
