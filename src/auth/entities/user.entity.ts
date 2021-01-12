@@ -1,5 +1,5 @@
-import { Entity ,BaseEntity, PrimaryGeneratedColumn, Column, Unique} from 'typeorm';
-import * as bycrpt from 'bcrypt';
+import { Entity ,BaseEntity, PrimaryGeneratedColumn, Column, Unique, BeforeInsert} from 'typeorm';
+import {compare, genSalt, hash } from 'bcryptjs'
 
 
 @Entity()
@@ -18,11 +18,17 @@ export class User extends BaseEntity {
     @Column('boolean', {default: true})
     status: boolean;
 
-    @Column()
-    salt: string ;
+
+    @BeforeInsert()
+    async hashPassword() {
+      if (!this.password){
+        return;
+      }
+      const salt = await genSalt(10)
+      this.password = await hash(this.password, salt);
+    }
 
     async validatePassword(password: string): Promise<boolean> {
-        const hash = await bycrpt.hash(password,this.salt);
-        return hash === this.password;
+        return await compare(password, this.password);
     }
 };
