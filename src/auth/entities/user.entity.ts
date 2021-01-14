@@ -1,5 +1,6 @@
-import { Entity ,BaseEntity, PrimaryGeneratedColumn, Column, Unique, BeforeInsert} from 'typeorm';
+import { Entity ,BaseEntity, PrimaryGeneratedColumn, Column, Unique, BeforeInsert, OneToMany} from 'typeorm';
 import {compare, genSalt, hash } from 'bcryptjs'
+import { Task } from 'src/tasks/entities/task.entity';
 
 
 @Entity()
@@ -18,6 +19,8 @@ export class User extends BaseEntity {
     @Column('boolean', {default: true})
     status: boolean;
 
+    @OneToMany(type => Task, task=> task.user, {eager: true})
+    tasks: Task[]
 
     @BeforeInsert()
     async hashPassword() {
